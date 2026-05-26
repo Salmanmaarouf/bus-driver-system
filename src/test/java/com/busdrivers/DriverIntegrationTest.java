@@ -79,4 +79,47 @@ public class DriverIntegrationTest {
         //TXT file should be empty since the ID failure
         assertEquals(0, repo.count());
     }
+
+    //test 3 check if the updated data is save correctly to the TXT file
+    @Test
+    void testIntegration_Update() throws IOException {
+        //adding a valid driver
+        repo.add(new Driver(ValidID, ValidNAME, YearOfExperienced, ValidLICENSE, ValidADDRESS, ValidBIRTH));
+
+        //update new data
+        int New_YearOfExperienced = 8;
+        String New_LICENSE = "Medium";
+        String New_ADDRESS = "23|Victoria Market|Melbourne|VIC|Australia";
+        String New_BIRTH = "23-03-2003";
+        repo.update(ValidID, New_YearOfExperienced, New_LICENSE, New_ADDRESS, New_BIRTH);
+
+        //check if updated data saved correctly
+        Driver updated = repo.retrieve(ValidID);
+        assertNotNull(updated);
+        assertEquals(8, updated.getExperienceYears());
+        assertEquals("Medium", updated.getLicenseType());
+        assertEquals(New_ADDRESS, updated.getAddress());
+        assertEquals(New_BIRTH, updated.getBirthdate());
+
+        //check if both ValidID and ValidName are the same
+        assertEquals(ValidID, updated.getDriverID());
+        assertEquals(ValidNAME, updated.getName());
+    }
+
+    //test 4 check that the driver counts adding correctly when driver is added
+    @Test
+    void testIntegration_CountCheck() throws IOException {
+
+        //check an empty TXT file
+        assertEquals(0, repo.count());
+
+        //add the first driver
+        repo.add(new Driver(ValidID, ValidNAME, YearOfExperienced, ValidLICENSE, ValidADDRESS, ValidBIRTH));
+
+        assertEquals(1, repo.count());
+        //add the second driver
+        repo.add(new Driver(ValidID2, ValidNAME2, YearOfExperienced2, ValidLICENSE2, ValidADDRESS2, ValidBIRTH2));
+
+        assertEquals(2, repo.count());
+    }
 }
